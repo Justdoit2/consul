@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"sort"
 	"testing"
 	"time"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/hashicorp/consul/sdk/testutil/retry"
 	"github.com/hashicorp/consul/testrpc"
 	"github.com/hashicorp/consul/types"
+	"github.com/stretchr/testify/require"
 )
 
 func verifySession(t *testing.T, r *retry.R, a *TestAgent, want structs.Session) {
@@ -715,9 +717,14 @@ func TestSessionsForNode(t *testing.T) {
 		if !ok {
 			t.Fatalf("should work")
 		}
-		if len(respObj) != 10 {
-			t.Fatalf("bad: %v", respObj)
+		// TODO: this assertion would be much cleaner with go-cmp.Equals and cmpopts.SortSlices
+		respIDs := make([]string, 0, len(ids))
+		for _, session := range respObj {
+			respIDs = append(respIDs, session.ID)
 		}
+		sort.Strings(ids)
+		sort.Strings(respIDs)
+		require.Equal(t, ids, respIDs)
 	})
 }
 
