@@ -717,14 +717,11 @@ func TestSessionsForNode(t *testing.T) {
 		if !ok {
 			t.Fatalf("should work")
 		}
-		// TODO: this assertion would be much cleaner with go-cmp.Equals and cmpopts.SortSlices
 		respIDs := make([]string, 0, len(ids))
 		for _, session := range respObj {
 			respIDs = append(respIDs, session.ID)
 		}
-		sort.Strings(ids)
-		sort.Strings(respIDs)
-		require.Equal(t, ids, respIDs)
+		require.ElementsMatch(t, ids, respIDs)
 	})
 }
 
