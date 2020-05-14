@@ -414,8 +414,15 @@ func (m *Internal) GatewayServices(args *structs.ServiceSpecificRequest, reply *
 				}
 			}
 
+			// Welog a warning here to indicate that there is a potential
+			// misconfiguration. We explicitly do NOT return an error because this
+			// can occur in the course of normal operation by deleting a
+			// configuration entry or starting the proxy before registering the
+			// config entry.
 			if !found {
-				return fmt.Errorf("service %q is not a configured terminating-gateway or ingress-gateway", args.ServiceName)
+				m.logger.Warn("service is not a configured terminating-gateway or ingress-gateway",
+					"service", args.ServiceName,
+				)
 			}
 
 			index, services, err = state.GatewayServices(ws, args.ServiceName, &args.EnterpriseMeta)
