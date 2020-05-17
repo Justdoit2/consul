@@ -39,7 +39,7 @@ func RequireIdentityMatch(t testing.T, id *Identity, projectedVars map[string]st
 		}
 
 		if !result {
-			t.Fatalf("filter %q did not match", filter)
+			t.Fatalf("filter %q did not matchs", filter)
 		}
 	}
 }
